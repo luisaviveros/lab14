@@ -1,25 +1,25 @@
-const container = document.getElementById("main-container")
+const container = document.getElementById("main-container");
 
 async function getCharacters() {
-    // TODO: Obtener los objetos desde el api de rick and morty (enlace en el documento). Haga uso de la funcion fetch. Puede usar async/await y la funcion json
-    
-
-    var characters = []
-    // TODO: Recorra la lista json obtenida y convierta cada elemento (mapa) en un objeto Character y agreguelo a la lista characters.
-    // Llame a la funcion parseJsonToCharacter para cada elemento del recorrido.
-    
-
-    renderAllCharacters(characters)
+    try {
+        const response = await fetch('https://rickandmortyapi.com/api/character');
+        const data = await response.json();
+        var characters = data.results.map(character => parseJsonToCharacter(character));
+        renderAllCharacters(characters);
+    } catch (error) {
+        console.error('Error fetching characters:', error);
+    }
 }
 
 function parseJsonToCharacter(element) {
-    // TODO: Retorna un objeto de tipo "Character" a partir de un mapa (element) pasado como parametro
+    return new Character(element.name, element.image, element.status, element.species, element.location.name);
 }
 
 function renderAllCharacters(characters) {
+    container.innerHTML = '';  // recuerda que esto es para limpiar el cosito de los personajes
     characters.forEach(character => {
-        container.innerHTML += character.toHtml()
-    })
+        container.innerHTML += character.toHtml();
+    });
 }
 
-getCharacters()
+getCharacters();
